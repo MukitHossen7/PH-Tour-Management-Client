@@ -20,9 +20,9 @@ const navigationLinks = [
   { href: "#", label: "About" },
 ];
 
-export default function Component() {
+export default function Navbar() {
   return (
-    <header className="border-b px-10 w-11/12 md:w-11/12 lg:w-11/12 xl:container mx-auto">
+    <header className="border-b px-4 md:px-10 w-11/12 md:w-11/12 lg:w-11/12 xl:container mx-auto">
       <div className="flex h-16 items-center justify-between gap-4">
         {/* Left side */}
         <div className="flex items-center gap-2">
