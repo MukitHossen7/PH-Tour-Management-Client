@@ -1,10 +1,10 @@
 const Footer = () => {
   return (
-    <footer className="bg-white">
-      <div className="mx-auto max-w-screen-xl space-y-8 px-4 py-16 sm:px-6 lg:space-y-16 lg:px-8">
+    <footer>
+      <div className="w-11/12 md:w-11/12 lg:w-11/12 xl:container mx-auto py-10 px-10">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           <div>
-            <div className="text-teal-600">
+            <div className="text-foreground">
               <svg
                 className="h-8"
                 viewBox="0 0 118 24"
@@ -54,7 +54,7 @@ const Footer = () => {
               </svg>
             </div>
 
-            <p className="mt-4 max-w-xs text-gray-500">
+            <p className="mt-4 max-w-xs text-muted-foreground">
               Lorem ipsum dolor, sit amet consectetur adipisicing elit. Esse non
               cupiditate quae nam molestias.
             </p>
