@@ -60,9 +60,10 @@ export function RegisterForm({
       };
 
       const result = await register(userInfo).unwrap();
-      toast.success("Your registration was successful");
-      console.log(result);
-      navigate("/verify");
+      if (result.success) {
+        toast.success("Your registration was successful");
+        navigate("/login");
+      }
     } catch (error: any) {
       toast.error(error?.data.message);
       console.error(error);
