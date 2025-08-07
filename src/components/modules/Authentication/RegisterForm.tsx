@@ -12,7 +12,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Password from "@/components/ui/Password";
@@ -41,6 +41,7 @@ export function RegisterForm({
   ...props
 }: React.ComponentProps<"form">) {
   const [register] = useRegisterMutation();
+  const navigate = useNavigate();
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -61,6 +62,7 @@ export function RegisterForm({
       const result = await register(userInfo).unwrap();
       toast.success("Your registration was successful");
       console.log(result);
+      navigate("/verify");
     } catch (error: any) {
       toast.error(error?.data.message);
       console.error(error);
