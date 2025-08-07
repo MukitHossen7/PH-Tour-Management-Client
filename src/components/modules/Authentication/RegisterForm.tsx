@@ -15,19 +15,25 @@ import { Input } from "@/components/ui/input";
 import { Link } from "react-router";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Password from "@/components/ui/Password";
 
-const registerSchema = z.object({
-  name: z.string().min(2, {
-    error: "Name must be at least 2 characters.",
-  }),
-  email: z.email(),
-  password: z.string().min(8, {
-    error: "password is short!",
-  }),
-  confirmPassword: z.string().min(8, {
-    error: "password is short!",
-  }),
-});
+const registerSchema = z
+  .object({
+    name: z.string().min(2, {
+      error: "Name must be at least 2 characters.",
+    }),
+    email: z.email(),
+    password: z.string().min(8, {
+      error: "password is short!",
+    }),
+    confirmPassword: z.string().min(8, {
+      error: "password is short!",
+    }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
 export function RegisterForm({
   className,
   ...props
@@ -97,7 +103,7 @@ export function RegisterForm({
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input placeholder="********" type="password" {...field} />
+                <Password {...field} />
               </FormControl>
               <FormDescription className="sr-only">
                 This is your public display password.
@@ -113,7 +119,7 @@ export function RegisterForm({
             <FormItem>
               <FormLabel>Confirm Password</FormLabel>
               <FormControl>
-                <Input placeholder="********" type="password" {...field} />
+                <Password {...field} />
               </FormControl>
               <FormDescription className="sr-only">
                 This is your public display Confirm Password.
