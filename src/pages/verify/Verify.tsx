@@ -22,10 +22,12 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { useSendOTPMutation } from "@/redux/features/auth/auth.api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router";
+import { toast } from "sonner";
 import z from "zod";
 
 const FormSchema = z.object({
@@ -39,6 +41,7 @@ const Verify = () => {
   const [email] = useState(location.state);
   const [confirm, setConfirm] = useState(false);
   const navigate = useNavigate();
+  const [sendOTP] = useSendOTPMutation();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -54,8 +57,17 @@ const Verify = () => {
     }
   }, [email]);
 
-  const handleConfirm = () => {
-    setConfirm(true);
+  const handleConfirm = async () => {
+    try {
+      const res = await sendOTP({ email: email }).unwrap();
+      if (res.success) {
+        toast.success("OTP sent successfully");
+      }
+      setConfirm(true);
+    } catch (error) {
+      console.error("Failed to send OTP:", error);
+      toast.error("Failed to send OTP");
+    }
   };
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">

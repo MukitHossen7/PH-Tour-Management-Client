@@ -59,7 +59,7 @@ export function RegisterForm({
         email: data.email,
         password: data.password,
       };
-      console.log(userInfo);
+      // console.log(userInfo);
       const result = await register(userInfo).unwrap();
       if (result.success) {
         toast.success("Your registration was successful");
