@@ -1,18 +1,136 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router";
+import z from "zod";
+
+const FormSchema = z.object({
+  pin: z.string().min(6, {
+    message: "Your one-time password must be 6 characters.",
+  }),
+});
 
 const Verify = () => {
   const location = useLocation();
   const [email] = useState(location.state);
+  const [confirm, setConfirm] = useState(false);
   const navigate = useNavigate();
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
+      pin: "",
+    },
+  });
+  const onSubmit = (data: z.infer<typeof FormSchema>) => {
+    console.log(data);
+  };
   useEffect(() => {
     if (!email) {
       navigate("/");
     }
   }, [email]);
+
+  const handleConfirm = () => {
+    setConfirm(true);
+  };
   return (
-    <div>
-      <h1>This is Verify component</h1>
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      {confirm ? (
+        <Card className="w-full max-w-sm p-6 shadow-lg">
+          <CardHeader className="text-center">
+            <CardTitle>Verify your email address</CardTitle>
+            <CardDescription>
+              Please enter the 6-digit code we sent to <br /> {email}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-6"
+              >
+                <FormField
+                  control={form.control}
+                  name="pin"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>One-Time Password</FormLabel>
+                      <FormControl>
+                        <InputOTP maxLength={6} {...field}>
+                          <InputOTPGroup>
+                            <InputOTPSlot index={0} />
+                          </InputOTPGroup>
+                          <InputOTPGroup>
+                            <InputOTPSlot index={1} />
+                          </InputOTPGroup>
+                          <InputOTPGroup>
+                            <InputOTPSlot index={2} />
+                          </InputOTPGroup>
+                          <InputOTPGroup>
+                            <InputOTPSlot index={3} />
+                          </InputOTPGroup>
+                          <InputOTPGroup>
+                            <InputOTPSlot index={4} />
+                          </InputOTPGroup>
+                          <InputOTPGroup>
+                            <InputOTPSlot index={5} />
+                          </InputOTPGroup>
+                        </InputOTP>
+                      </FormControl>
+                      <FormDescription className="sr-only">
+                        Please enter the one-time password sent to your phone.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button className="w-full" type="submit">
+                  Submit
+                </Button>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
+      ) : (
+        <Card className="w-full max-w-sm text-center">
+          <CardHeader>
+            <CardTitle>Verify Your email address</CardTitle>
+            <CardDescription>
+              We Will send you an OTP at <br /> {email}
+            </CardDescription>
+          </CardHeader>
+
+          <CardFooter className="flex-col gap-2">
+            <Button type="submit" onClick={handleConfirm} className="w-full">
+              Confirm
+            </Button>
+          </CardFooter>
+        </Card>
+      )}
     </div>
   );
 };
