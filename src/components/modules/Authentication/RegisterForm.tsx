@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
@@ -58,7 +59,7 @@ export function RegisterForm({
         email: data.email,
         password: data.password,
       };
-
+      console.log(userInfo);
       const result = await register(userInfo).unwrap();
       if (result.success) {
         toast.success("Your registration was successful");

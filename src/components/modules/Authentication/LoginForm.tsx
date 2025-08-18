@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -45,6 +46,7 @@ export function LoginForm({
         email: data.email,
         password: data.password,
       };
+      // console.log(userInfo);
       const result = await login(userInfo).unwrap();
       console.log(result);
       toast.success("Login Successfully");
