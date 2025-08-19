@@ -22,7 +22,10 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import { useSendOTPMutation } from "@/redux/features/auth/auth.api";
+import {
+  useSendOTPMutation,
+  useVerifyOTPMutation,
+} from "@/redux/features/auth/auth.api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -42,14 +45,29 @@ const Verify = () => {
   const [confirm, setConfirm] = useState(false);
   const navigate = useNavigate();
   const [sendOTP] = useSendOTPMutation();
+  const [verifyOTP] = useVerifyOTPMutation();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       pin: "",
     },
   });
-  const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    console.log(data);
+  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    try {
+      const toastId = toast.loading("Verifying OTP...");
+      const userInfo = {
+        email: email,
+        otp: data.pin,
+      };
+      const res = await verifyOTP(userInfo).unwrap();
+      if (res.success) {
+        toast.success("OTP verified successfully", { id: toastId });
+        navigate("/login");
+      }
+    } catch (error) {
+      console.error("Failed to verify OTP:", error);
+      toast.error("Failed to verify OTP");
+    }
   };
   useEffect(() => {
     if (!email) {
@@ -59,11 +77,12 @@ const Verify = () => {
 
   const handleConfirm = async () => {
     try {
+      const toastId = toast.loading("Sending OTP...");
       const res = await sendOTP({ email: email }).unwrap();
       if (res.success) {
-        toast.success("OTP sent successfully");
+        toast.success("OTP sent successfully", { id: toastId });
+        setConfirm(true);
       }
-      setConfirm(true);
     } catch (error) {
       console.error("Failed to send OTP:", error);
       toast.error("Failed to send OTP");
