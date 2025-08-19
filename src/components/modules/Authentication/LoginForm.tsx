@@ -19,6 +19,7 @@ import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useLoginMutation } from "@/redux/features/auth/auth.api";
+import config from "@/config";
 
 const loginSchema = z.object({
   email: z.email(),
@@ -116,7 +117,14 @@ export function LoginForm({
               Or continue with
             </span>
           </div>
-          <Button variant="outline" className="w-full">
+          <Button
+            onClick={() =>
+              (window.location.href = `${config.base_url}/auth/google`)
+            }
+            variant="outline"
+            type="button"
+            className="w-full"
+          >
             <img src={googleIcon} alt="Image" className="w-6" />
             Login with Google
           </Button>

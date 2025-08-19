@@ -17,6 +17,12 @@ const authApi = baseApi.injectEndpoints({
         data: userInfo,
       }),
     }),
+    logOut: builder.mutation<IResponse<null>, null>({
+      query: () => ({
+        url: "/auth/logout",
+        method: "POST",
+      }),
+    }),
     register: builder.mutation<IResponse<IRegisterData>, IRegister>({
       query: (userInfo) => ({
         url: "/user/register",
@@ -38,12 +44,20 @@ const authApi = baseApi.injectEndpoints({
         data: userInfo,
       }),
     }),
+    getMe: builder.query({
+      query: () => ({
+        url: "/user/me",
+        method: "GET",
+      }),
+    }),
   }),
 });
 
 export const {
   useRegisterMutation,
   useLoginMutation,
+  useLogOutMutation,
   useSendOTPMutation,
   useVerifyOTPMutation,
+  useGetMeQuery,
 } = authApi;
