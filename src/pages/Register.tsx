@@ -1,6 +1,6 @@
 import Logo from "@/assets/icons/Logo";
 import { Link } from "react-router";
-import registerImage from "../../assets/images/travel-register.jpg";
+import registerImage from "../assets/images/travel-register.jpg";
 import { RegisterForm } from "@/components/modules/Authentication/RegisterForm";
 const Register = () => {
   return (

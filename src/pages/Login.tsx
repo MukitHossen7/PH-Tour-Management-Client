@@ -1,7 +1,7 @@
 import Logo from "@/assets/icons/Logo";
 import { LoginForm } from "@/components/modules/Authentication/LoginForm";
 import { Link } from "react-router";
-import loginImage from "../../assets/images/travel-login.jpg";
+import loginImage from "../assets/images/travel-login.jpg";
 
 const Login = () => {
   return (
