@@ -12,12 +12,14 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { ModeToggle } from "./ModeToggler";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import {
+  authApi,
   useGetMeQuery,
   useLogOutMutation,
 } from "@/redux/features/auth/auth.api";
 import { toast } from "sonner";
+import { useAppDispatch } from "@/redux/hook";
 
 // Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [
@@ -28,13 +30,15 @@ const navigationLinks = [
 export default function Navbar() {
   const { data: userInfo } = useGetMeQuery(undefined);
   const [logOut] = useLogOutMutation();
-  console.log(userInfo?.data);
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const handleLogout = async () => {
     try {
       const result = await logOut(null).unwrap();
-      console.log(result);
       if (result.success) {
         toast.success("Logged out successfully");
+        dispatch(authApi.util.resetApiState());
+        navigate("/");
       }
     } catch (error) {
       console.log("Logout failed:", error);

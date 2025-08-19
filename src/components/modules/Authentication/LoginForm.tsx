@@ -50,7 +50,10 @@ export function LoginForm({
       // console.log(userInfo);
       const result = await login(userInfo).unwrap();
       console.log(result);
-      toast.success("Login Successfully");
+      if (result.success) {
+        toast.success("Login Successfully");
+        navigate("/");
+      }
     } catch (error: any) {
       console.error(error);
       if (error.data.message === "Password is incorrect") {

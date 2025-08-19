@@ -8,7 +8,7 @@ import type {
   IVerifyOTP,
 } from "@/types";
 
-const authApi = baseApi.injectEndpoints({
+export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation<IResponse<null>, ILogin>({
       query: (userInfo) => ({
