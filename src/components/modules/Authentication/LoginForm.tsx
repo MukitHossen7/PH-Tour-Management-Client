@@ -52,7 +52,11 @@ export function LoginForm({
       toast.success("Login Successfully");
     } catch (error: any) {
       console.error(error);
-      if (error.status === 401) {
+      if (error.data.message === "Password is incorrect") {
+        toast.error("Invalid credentials");
+        return;
+      }
+      if (error.data.message === "Your account is not Verified") {
         toast.error("Your account is not Verified");
         navigate("/verify", { state: data.email });
       }

@@ -22,6 +22,7 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { cn } from "@/lib/utils";
 import {
   useSendOTPMutation,
   useVerifyOTPMutation,
@@ -43,6 +44,7 @@ const Verify = () => {
   const location = useLocation();
   const [email] = useState(location.state);
   const [confirm, setConfirm] = useState(false);
+  const [timer, setTimer] = useState(120);
   const navigate = useNavigate();
   const [sendOTP] = useSendOTPMutation();
   const [verifyOTP] = useVerifyOTPMutation();
@@ -75,13 +77,22 @@ const Verify = () => {
     }
   }, [email]);
 
-  const handleConfirm = async () => {
+  useEffect(() => {
+    if (!email || !confirm) return;
+    const interval = setInterval(() => {
+      setTimer((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [email, confirm]);
+
+  const handleSendOtp = async () => {
     try {
       const toastId = toast.loading("Sending OTP...");
       const res = await sendOTP({ email: email }).unwrap();
       if (res.success) {
         toast.success("OTP sent successfully", { id: toastId });
         setConfirm(true);
+        setTimer(120);
       }
     } catch (error) {
       console.error("Failed to send OTP:", error);
@@ -100,10 +111,7 @@ const Verify = () => {
           </CardHeader>
           <CardContent>
             <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-6"
-              >
+              <form onSubmit={form.handleSubmit(onSubmit)} className="">
                 <FormField
                   control={form.control}
                   name="pin"
@@ -139,7 +147,20 @@ const Verify = () => {
                     </FormItem>
                   )}
                 />
-                <Button className="w-full" type="submit">
+                <Button
+                  variant="link"
+                  type="button"
+                  onClick={handleSendOtp}
+                  disabled={timer > 0}
+                  className={cn("p-0 mt-0", {
+                    "cursor-pointer": timer === 0,
+                    "cursor-not-allowed": timer > 0,
+                  })}
+                >
+                  <span>Resend OTP: </span>
+                </Button>
+                <span className="ml-1">{timer}</span>
+                <Button className="w-full mt-4" type="submit">
                   Submit
                 </Button>
               </form>
@@ -156,7 +177,7 @@ const Verify = () => {
           </CardHeader>
 
           <CardFooter className="flex-col gap-2">
-            <Button type="submit" onClick={handleConfirm} className="w-full">
+            <Button type="submit" onClick={handleSendOtp} className="w-full">
               Confirm
             </Button>
           </CardFooter>
