@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import AddTourTypeModal from "@/components/modules/admin/tourType/AddTourTypeModal";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -19,7 +20,7 @@ const AddTourType = () => {
     <div className="w-11/12 md:w-11/12 lg:w-10/12 mx-auto border-muted rounded-md px-2 border">
       <div className="flex items-center justify-between pb-10 pt-4">
         <h1 className="text-xl font-semibold ">Tour Type</h1>
-        <Button>Add Tour Type</Button>
+        <AddTourTypeModal />
       </div>
       <Table>
         <TableCaption>A list of your Tour Type.</TableCaption>
