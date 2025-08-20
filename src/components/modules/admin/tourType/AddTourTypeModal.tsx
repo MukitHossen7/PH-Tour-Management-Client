@@ -41,11 +41,12 @@ const AddTourTypeModal = () => {
   });
   const HandleAddTourType = async (data: z.infer<typeof formSchema>) => {
     try {
+      const toastId = toast.loading("Adding Tour Type...");
       const res = await addTourType({ name: data.name }).unwrap();
       if (res.success) {
-        toast.success("Tour Type added successfully");
-        form.reset();
+        toast.success("Tour Type added successfully", { id: toastId });
         setOpen(false);
+        form.reset();
       }
     } catch (error) {
       console.log("Add Tour Type Error", error);
