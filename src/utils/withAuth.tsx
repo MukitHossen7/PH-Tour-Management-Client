@@ -6,8 +6,6 @@ import { Navigate } from "react-router";
 export const withAuth = (Component: ComponentType, requiredRole?: TRole) => {
   return function AuthWrapper() {
     const { data: userInfo, isLoading } = useGetMeQuery(undefined);
-    console.log(userInfo);
-
     // if (isLoading) {
     //   return <div>Loading...</div>;
     // }
