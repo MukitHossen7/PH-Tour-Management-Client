@@ -26,8 +26,8 @@ import { role } from "@/constants/role";
 const navigationLinks = [
   { href: "/", label: "Home", role: "PUBLIC" },
   { href: "/about", label: "About", role: "PUBLIC" },
-  { href: "/admin", label: "Admin", role: role.ADMIN },
-  { href: "/user", label: "User", role: role.USER },
+  { href: "/admin", label: "Dashboard", role: role.ADMIN },
+  { href: "/user", label: "Dashboard", role: role.USER },
 ];
 
 export default function Navbar() {
@@ -91,13 +91,23 @@ export default function Navbar() {
             <PopoverContent align="start" className="w-36 p-1 md:hidden">
               <NavigationMenu className="max-w-none *:w-full">
                 <NavigationMenuList className="flex-col items-start gap-0 md:gap-2">
-                  {navigationLinks.map((link, index) => (
-                    <NavigationMenuItem key={index} className="w-full">
-                      <NavigationMenuLink asChild className="py-1.5">
-                        <Link to={link?.href as string}>{link?.label}</Link>
-                      </NavigationMenuLink>
-                    </NavigationMenuItem>
-                  ))}
+                  {navigationLinks
+                    .filter((link) => {
+                      if (link.role === "PUBLIC") return true;
+                      if (
+                        userInfo?.data?.role &&
+                        link.role === userInfo?.data?.role
+                      ) {
+                        return true;
+                      }
+                    })
+                    .map((link, index) => (
+                      <NavigationMenuItem key={index} className="w-full">
+                        <NavigationMenuLink asChild className="py-1.5">
+                          <Link to={link?.href as string}>{link?.label}</Link>
+                        </NavigationMenuLink>
+                      </NavigationMenuItem>
+                    ))}
                 </NavigationMenuList>
               </NavigationMenu>
             </PopoverContent>
@@ -110,16 +120,26 @@ export default function Navbar() {
             {/* Navigation menu */}
             <NavigationMenu className="max-md:hidden">
               <NavigationMenuList className="gap-2">
-                {navigationLinks.map((link, index) => (
-                  <NavigationMenuItem key={index}>
-                    <NavigationMenuLink
-                      asChild
-                      className="text-muted-foreground hover:text-primary py-1.5 font-medium"
-                    >
-                      <Link to={link?.href as string}> {link?.label}</Link>
-                    </NavigationMenuLink>
-                  </NavigationMenuItem>
-                ))}
+                {navigationLinks
+                  .filter((link) => {
+                    if (link.role === "PUBLIC") return true;
+                    if (
+                      userInfo?.data?.role &&
+                      link.role === userInfo?.data?.role
+                    ) {
+                      return true;
+                    }
+                  })
+                  .map((link, index) => (
+                    <NavigationMenuItem key={index}>
+                      <NavigationMenuLink
+                        asChild
+                        className="text-muted-foreground hover:text-primary py-1.5 font-medium"
+                      >
+                        <Link to={link?.href as string}> {link?.label}</Link>
+                      </NavigationMenuLink>
+                    </NavigationMenuItem>
+                  ))}
               </NavigationMenuList>
             </NavigationMenu>
           </div>
