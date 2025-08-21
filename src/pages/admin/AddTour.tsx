@@ -34,7 +34,7 @@ import { cn } from "@/lib/utils";
 import { useGetDivisionQuery } from "@/redux/features/division/division.api";
 import { useGetTourTypeQuery } from "@/redux/features/tour/tour.api";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
+import { format, formatISO } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import z from "zod";
@@ -77,7 +77,12 @@ const AddTour = () => {
 
   // Handle form submission
   const handleSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log("Form Data:", data);
+    const tourData = {
+      ...data,
+      startDate: formatISO(data.startDate),
+      endDate: formatISO(data.endDate),
+    };
+    console.log("Submitted Tour Data:", tourData);
   };
 
   return (
@@ -211,7 +216,7 @@ const AddTour = () => {
                             selected={field.value}
                             onSelect={field.onChange}
                             disabled={(date) =>
-                              date > new Date() || date < new Date("1900-01-01")
+                              date < new Date(new Date().setHours(0, 0, 0, 0))
                             }
                             captionLayout="dropdown"
                           />
@@ -252,7 +257,7 @@ const AddTour = () => {
                             selected={field.value}
                             onSelect={field.onChange}
                             disabled={(date) =>
-                              date > new Date() || date < new Date("1900-01-01")
+                              date < new Date(new Date().setHours(0, 0, 0, 0))
                             }
                             captionLayout="dropdown"
                           />
