@@ -20,9 +20,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useAddDivisionMutation } from "@/redux/features/division/division.api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 // import { toast } from "sonner";
 import z from "zod";
 
@@ -35,6 +37,7 @@ const formSchema = z.object({
 const AddDivisionModal = () => {
   const [open, setOpen] = useState(false);
   const [image, setImage] = useState<File | null>(null);
+  const [addDivision] = useAddDivisionMutation();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -42,10 +45,25 @@ const AddDivisionModal = () => {
       description: "",
     },
   });
-  const HandleAddTourType = async (data: z.infer<typeof formSchema>) => {
-    console.log(data);
-    console.log(image);
-    setOpen(false);
+  const HandleAddTourType = async (
+    divisionInfo: z.infer<typeof formSchema>
+  ) => {
+    try {
+      const toastId = toast.loading("Adding Division...");
+      const formData = new FormData();
+      formData.append("data", JSON.stringify(divisionInfo));
+      formData.append("file", image as File);
+      const res = await addDivision(formData).unwrap();
+      if (res.success) {
+        toast.success("Division added successfully", { id: toastId });
+        setOpen(false);
+        form.reset();
+      }
+    } catch (error) {
+      console.error("Error adding division:", error);
+      toast.error("Failed to add division");
+    }
+
     // try {
     //   const toastId = toast.loading("Adding Tour Type...");
     //   const res = await addTourType({ name: data.name }).unwrap();

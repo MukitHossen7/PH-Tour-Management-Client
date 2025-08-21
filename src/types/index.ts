@@ -8,6 +8,8 @@ export type {
   IVerifyOTP,
 } from "./auth.type";
 
+export type { IDivision } from "./division.type";
+
 export interface IResponse<T> {
   statusCode: number;
   success: boolean;
