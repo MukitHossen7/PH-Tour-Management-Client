@@ -34,7 +34,10 @@ import { Textarea } from "@/components/ui/textarea";
 import type { FileMetadata } from "@/hooks/use-file-upload";
 import { cn } from "@/lib/utils";
 import { useGetDivisionQuery } from "@/redux/features/division/division.api";
-import { useGetTourTypeQuery } from "@/redux/features/tour/tour.api";
+import {
+  useAddTourMutation,
+  useGetTourTypeQuery,
+} from "@/redux/features/tour/tour.api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format, formatISO } from "date-fns";
 import { CalendarIcon } from "lucide-react";
@@ -53,6 +56,7 @@ const formSchema = z.object({
 });
 const AddTour = () => {
   const [images, setImages] = useState<(File | FileMetadata)[] | []>([]);
+  const [addTour] = useAddTourMutation();
   const { data: divisionData, isLoading: divisionLoading } =
     useGetDivisionQuery(undefined);
   const { data: tourTypeData, isLoading: tourTypeLoading } =
@@ -81,23 +85,22 @@ const AddTour = () => {
     })) || [];
 
   // Handle form submission
-  const handleSubmit = (data: z.infer<typeof formSchema>) => {
+  const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
+      const toastId = toast.loading("Creating Tour...");
       const formData = new FormData();
       const tourData = {
         ...data,
         startDate: formatISO(data.startDate),
         endDate: formatISO(data.endDate),
       };
-      images.forEach((image) => {
-        if (image instanceof File) {
-          formData.append("files", image);
-        }
-      });
+      images.forEach((image) => formData.append("files", image as File));
       formData.append("data", JSON.stringify(tourData));
-
-      console.log("Form Data:", formData.get("data"));
-      console.log(formData.getAll("files"));
+      const res = await addTour(formData).unwrap();
+      if (res.success) {
+        toast.success("Tour created successfully", { id: toastId });
+        form.reset();
+      }
     } catch (error) {
       console.error("Error submitting form:", error);
       toast.error("Failed to create tour. Please try again.");

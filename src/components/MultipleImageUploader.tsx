@@ -91,6 +91,7 @@ export default function MultipleImageUploader({ onChange }: IProps) {
                     className="size-full rounded-[inherit] object-cover"
                   />
                   <Button
+                    type="button"
                     onClick={() => removeFile(file.id)}
                     size="icon"
                     className="border-background focus-visible:border-background absolute -top-2 -right-2 size-6 rounded-full border-2 shadow-none"

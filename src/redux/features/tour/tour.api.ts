@@ -28,7 +28,7 @@ export const tourApi = baseApi.injectEndpoints({
       providesTags: ["TOUR_TYPE"],
     }),
 
-    addTour: builder.mutation({
+    addTour: builder.mutation<IResponse<null>, FormData>({
       query: (tourData) => ({
         url: "/tour/create",
         method: "POST",
