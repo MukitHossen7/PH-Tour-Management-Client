@@ -1,3 +1,4 @@
+import SingleImageUploader from "@/components/SingleImageUploader";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -33,6 +34,7 @@ const formSchema = z.object({
 });
 const AddDivisionModal = () => {
   const [open, setOpen] = useState(false);
+  const [image, setImage] = useState<File | null>(null);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -42,6 +44,7 @@ const AddDivisionModal = () => {
   });
   const HandleAddTourType = async (data: z.infer<typeof formSchema>) => {
     console.log(data);
+    console.log(image);
     setOpen(false);
     // try {
     //   const toastId = toast.loading("Adding Tour Type...");
@@ -62,7 +65,7 @@ const AddDivisionModal = () => {
         <DialogTrigger asChild>
           <Button>Add Division</Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[425px] max-h-[100vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Add Division</DialogTitle>
           </DialogHeader>
@@ -110,6 +113,7 @@ const AddDivisionModal = () => {
                   </FormItem>
                 )}
               />
+              <SingleImageUploader onChange={setImage} />
               <DialogFooter className="mt-8">
                 <DialogClose asChild>
                   <Button variant="outline">Cancel</Button>
