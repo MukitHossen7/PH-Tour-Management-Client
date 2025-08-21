@@ -1,3 +1,4 @@
+import MultipleImageUploader from "@/components/MultipleImageUploader";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -30,13 +31,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import type { FileMetadata } from "@/hooks/use-file-upload";
 import { cn } from "@/lib/utils";
 import { useGetDivisionQuery } from "@/redux/features/division/division.api";
 import { useGetTourTypeQuery } from "@/redux/features/tour/tour.api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format, formatISO } from "date-fns";
 import { CalendarIcon } from "lucide-react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import z from "zod";
 
 const formSchema = z.object({
@@ -48,6 +52,7 @@ const formSchema = z.object({
   endDate: z.date({ message: "End date is required" }),
 });
 const AddTour = () => {
+  const [images, setImages] = useState<(File | FileMetadata)[] | []>([]);
   const { data: divisionData, isLoading: divisionLoading } =
     useGetDivisionQuery(undefined);
   const { data: tourTypeData, isLoading: tourTypeLoading } =
@@ -77,12 +82,26 @@ const AddTour = () => {
 
   // Handle form submission
   const handleSubmit = (data: z.infer<typeof formSchema>) => {
-    const tourData = {
-      ...data,
-      startDate: formatISO(data.startDate),
-      endDate: formatISO(data.endDate),
-    };
-    console.log("Submitted Tour Data:", tourData);
+    try {
+      const formData = new FormData();
+      const tourData = {
+        ...data,
+        startDate: formatISO(data.startDate),
+        endDate: formatISO(data.endDate),
+      };
+      images.forEach((image) => {
+        if (image instanceof File) {
+          formData.append("files", image);
+        }
+      });
+      formData.append("data", JSON.stringify(tourData));
+
+      console.log("Form Data:", formData.get("data"));
+      console.log(formData.getAll("files"));
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast.error("Failed to create tour. Please try again.");
+    }
   };
 
   return (
@@ -282,6 +301,9 @@ const AddTour = () => {
                     </FormItem>
                   )}
                 />
+                <div className="flex-1 mt-5">
+                  <MultipleImageUploader onChange={setImages} />
+                </div>
               </div>
 
               <CardFooter className="flex justify-end">
