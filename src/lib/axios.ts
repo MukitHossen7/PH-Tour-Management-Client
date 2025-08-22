@@ -9,25 +9,30 @@ export const axiosInstance = axios.create({
 // Add a request interceptor
 axiosInstance.interceptors.request.use(
   function (config) {
-    // Do something before request is sent
     return config;
   },
   function (error) {
-    // Do something with request error
     return Promise.reject(error);
   }
 );
 
 // Add a response interceptor
 axiosInstance.interceptors.response.use(
-  function onFulfilled(response) {
-    // Any status code that lie within the range of 2xx cause this function to trigger
-    // Do something with response data
+  (response) => {
     return response;
   },
-  function onRejected(error) {
-    // Any status codes that falls outside the range of 2xx cause this function to trigger
-    // Do something with response error
-    return Promise.reject(error);
+  async (error) => {
+    console.log(error.response);
+    if (
+      error.response.status === 500 &&
+      error.response.data.message === "jwt expired"
+    ) {
+      try {
+        const res = await axiosInstance.post("/auth/refresh-token");
+        console.log(res);
+      } catch (error) {
+        console.log(error);
+      }
+    }
   }
 );
