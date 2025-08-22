@@ -10,6 +10,7 @@ export default function Booking() {
   const [guestCount, setGuestCount] = useState(1);
   const [totalAmount, setTotalAmount] = useState(0);
 
+  console.log("my booking");
   console.log(totalAmount);
 
   const { id } = useParams();

@@ -40,7 +40,7 @@ const router = createBrowserRouter([
       },
       {
         path: "booking/:id",
-        Component: withAuth(Booking),
+        Component: Booking,
       },
     ],
   },
