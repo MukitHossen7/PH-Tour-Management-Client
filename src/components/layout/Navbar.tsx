@@ -26,6 +26,7 @@ import { role } from "@/constants/role";
 const navigationLinks = [
   { href: "/", label: "Home", role: "PUBLIC" },
   { href: "/about", label: "About", role: "PUBLIC" },
+  { href: "/tour", label: "Tour", role: "PUBLIC" },
   { href: "/admin", label: "Dashboard", role: role.ADMIN },
   { href: "/user", label: "Dashboard", role: role.USER },
 ];
